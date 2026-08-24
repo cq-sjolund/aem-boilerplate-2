@@ -50,6 +50,25 @@ async function loadFonts() {
 }
 
 /**
+ * Builds hero block and prepends to main in a new section.
+ * @param {Element} main The container element
+ */
+function buildHeroBlock(main) {
+  const h1 = main.querySelector('h1');
+  const picture = main.querySelector('picture');
+  // eslint-disable-next-line no-bitwise
+  if (h1 && picture && (h1.compareDocumentPosition(picture) & Node.DOCUMENT_POSITION_PRECEDING)) {
+    // Check if h1 or picture is already inside a hero block
+    if (h1.closest('.hero') || picture.closest('.hero')) {
+      return; // Don't create a duplicate hero block
+    }
+    const section = document.createElement('div');
+    section.append(buildBlock('hero', { elems: [picture, h1] }));
+    main.prepend(section);
+  }
+}
+
+/**
  * Turns `/widgets/...` links into widget blocks.
  * @param {Element} main The container element
  */
@@ -97,6 +116,7 @@ function buildAutoBlocks(main) {
       });
     }
     buildWidgetAutoBlocks(main);
+    buildHeroBlock(main);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -109,7 +129,6 @@ function buildAutoBlocks(main) {
  */
 function decorateButtons(main) {
   main.querySelectorAll('p a[href]').forEach((a) => {
-    a.title = a.title || a.textContent;
     const p = a.closest('p');
     const text = a.textContent.trim();
 
@@ -124,8 +143,12 @@ function decorateButtons(main) {
     // require authored formatting for buttonization
     const strong = a.closest('strong');
     const em = a.closest('em');
-    if (!strong && !em) return;
 
+    // In styled sections (dark/accent), standalone links become buttons
+    const styledSection = p.closest('.section.dark, .section.accent');
+    if (!strong && !em && !styledSection) return;
+
+    a.title = a.title || text;
     p.className = 'button-wrapper';
     a.className = 'button';
     if (strong && em) { // high-impact call-to-action
@@ -135,9 +158,53 @@ function decorateButtons(main) {
     } else if (strong) {
       a.classList.add('primary');
       strong.replaceWith(a);
-    } else {
+    } else if (em) {
       a.classList.add('secondary');
       em.replaceWith(a);
+    } else {
+      // Bare link in styled section → primary button
+      a.classList.add('primary');
+    }
+  });
+}
+
+/**
+ * Fix button variants and group adjacent buttons.
+ * Runs during eager phase so hero buttons don't shift after first paint.
+ * @param {Element} main The main element
+ */
+function decorateButtonVariants(main) {
+  // In dark and accent sections, make the second consecutive button secondary
+  main.querySelectorAll(':scope > .section.dark, :scope > .section.accent').forEach((section) => {
+    section.querySelectorAll('.default-content-wrapper').forEach((wrapper) => {
+      const btnWrappers = [...wrapper.querySelectorAll(':scope > p.button-wrapper')];
+      for (let i = 1; i < btnWrappers.length; i += 1) {
+        if (btnWrappers[i].previousElementSibling === btnWrappers[i - 1]) {
+          const btn = btnWrappers[i].querySelector('a.button.primary');
+          if (btn) {
+            btn.classList.remove('primary');
+            btn.classList.add('secondary');
+          }
+        }
+      }
+    });
+  });
+
+  // Group adjacent button-wrappers into a flex container
+  main.querySelectorAll('p.button-wrapper').forEach((wrapper) => {
+    if (wrapper.parentElement.classList.contains('button-group')) return;
+    const next = wrapper.nextElementSibling;
+    if (next && next.classList.contains('button-wrapper')) {
+      const group = document.createElement('div');
+      group.className = 'button-group';
+      wrapper.parentNode.insertBefore(group, wrapper);
+      group.append(wrapper);
+      let sibling = group.nextElementSibling;
+      while (sibling && sibling.classList.contains('button-wrapper')) {
+        const nextSibling = sibling.nextElementSibling;
+        group.append(sibling);
+        sibling = nextSibling;
+      }
     }
   });
 }
@@ -153,6 +220,14 @@ export function decorateMain(main) {
   decorateSections(main);
   decorateBlocks(main);
   decorateButtons(main);
+  decorateButtonVariants(main);
+
+  // Tag pills: first <p> in dark/accent sections (eyebrow labels)
+  main.querySelectorAll(':scope > .section.dark > div > p:first-child, :scope > .section.accent > div > p:first-child').forEach((p) => {
+    if (!p.querySelector('a, img') && !p.classList.contains('button-wrapper')) {
+      p.classList.add('tag-pill');
+    }
+  });
 }
 
 /**
