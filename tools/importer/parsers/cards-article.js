@@ -2,10 +2,10 @@
 /* global WebImporter */
 
 /**
- * Parser for cards (cards-article) variant — DNB promo card grid.
- * Base: cards. Source: https://www.dnb.no/
+ * Parser for cards (cards-article) variant — Company promo card grid.
+ * Base: cards. Source: https://www.company.example/
  * Detected structurally: a section containing >= 2 repeating "card" units, each
- * being a container with an image wrapper and a heading (h2.dnb-heading).
+ * being a container with an image wrapper and a heading (h2.company-heading).
  *
  * Output structure (matches cards.js: one row per card):
  *   col1: <img>            (card image — EDS wraps bare img in <picture>)
@@ -18,7 +18,7 @@
  * A card is the nearest ancestor of a heading that also contains an image.
  */
 function findCards(section) {
-  const headings = [...section.querySelectorAll('h2.dnb-heading, h3.dnb-heading')];
+  const headings = [...section.querySelectorAll('h2.company-heading, h3.company-heading')];
   const cards = [];
   const seen = new Set();
   headings.forEach((h) => {

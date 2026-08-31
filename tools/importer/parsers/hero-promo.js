@@ -2,10 +2,10 @@
 /* global WebImporter */
 
 /**
- * Parser for hero (hero-promo) variant — DNB homepage banner.
- * Base: hero. Source: https://www.dnb.no/
- * Detected structurally: a section with a single large heading (h2.dnb-h--large),
- * one CTA button (a.dnb-button) and an image, that is NOT a repeating card grid.
+ * Parser for hero (hero-promo) variant — Company homepage banner.
+ * Base: hero. Source: https://www.company.example/
+ * Detected structurally: a section with a single large heading (h2.company-h--large),
+ * one CTA button (a.company-button) and an image, that is NOT a repeating card grid.
  *
  * Output structure (matches hero.js: image row, then content row):
  *   Row 1: <picture>/<img>  (image)
@@ -14,10 +14,10 @@
  */
 export default function parse(element, { document }) {
   // Heading — the large hero title
-  const heading = element.querySelector('h2.dnb-h--large, h1, h2');
+  const heading = element.querySelector('h2.company-h--large, h1, h2');
 
   // CTA — the primary button link
-  const cta = element.querySelector('a.dnb-button, a[href]');
+  const cta = element.querySelector('a.company-button, a[href]');
 
   // Image — pick the largest / first real content image (skip empty-alt spacers)
   const imgs = [...element.querySelectorAll('img')];

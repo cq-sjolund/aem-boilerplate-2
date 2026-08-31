@@ -1,19 +1,19 @@
 /* eslint-disable */
 /* global WebImporter */
 
-// PARSER IMPORTS — DNB block variants
-import dnbHeroPromoParser from './parsers/dnb-hero-promo.js';
-import dnbCardsArticleParser from './parsers/dnb-cards-article.js';
-import dnbCardsOverlayParser from './parsers/dnb-cards-overlay.js';
+// PARSER IMPORTS — Company block variants
+import heroPromoParser from './parsers/hero-promo.js';
+import cardsArticleParser from './parsers/cards-article.js';
+import cardsOverlayParser from './parsers/cards-overlay.js';
 
 // TRANSFORMER IMPORTS
-import dnbCleanupTransformer from './transformers/dnb-cleanup.js';
-import dnbSectionsTransformer from './transformers/dnb-sections.js';
+import cleanupTransformer from './transformers/cleanup.js';
+import sectionsTransformer from './transformers/sections.js';
 
 /**
- * Content-driven block detection for DNB pages.
+ * Content-driven block detection for Company pages.
  *
- * DNB (Gatsby) emits obfuscated, per-build CSS class names, so blocks CANNOT be
+ * Company (Gatsby) emits obfuscated, per-build CSS class names, so blocks CANNOT be
  * detected by class name. Each entry uses a structural `match(section)` predicate
  * that inspects the DOM shape only. Detection is per top-level <section>.
  *
@@ -34,24 +34,24 @@ const BLOCK_REGISTRY = [
         return a && a.querySelector('img') && a.querySelector('h1,h2,h3,h4');
       });
     },
-    parser: dnbCardsOverlayParser,
+    parser: cardsOverlayParser,
   },
   {
     name: 'cards-article',
     // >= 2 repeating card units, each an image wrapper + heading (text below image).
     match: (section) => countCardUnits(section) >= 2,
-    parser: dnbCardsArticleParser,
+    parser: cardsArticleParser,
   },
   {
     name: 'hero-promo',
     // Single large heading + one CTA button + an image; not a repeating card grid.
     match: (section) => (
-      section.querySelectorAll('h2.dnb-h--large, h1').length === 1
-      && !!section.querySelector('a.dnb-button, a[href]')
+      section.querySelectorAll('h2.company-h--large, h1').length === 1
+      && !!section.querySelector('a.company-button, a[href]')
       && !!section.querySelector('.gatsby-image-wrapper, picture, img')
       && countCardUnits(section) < 2
     ),
-    parser: dnbHeroPromoParser,
+    parser: heroPromoParser,
   },
 ];
 
@@ -60,7 +60,7 @@ const BLOCK_REGISTRY = [
  * heading that also contain an image.
  */
 function countCardUnits(section) {
-  const headings = [...section.querySelectorAll('h2.dnb-heading, h3.dnb-heading')];
+  const headings = [...section.querySelectorAll('h2.company-heading, h3.company-heading')];
   const cards = new Set();
   headings.forEach((h) => {
     let el = h.parentElement;
@@ -106,7 +106,7 @@ function findBlocksOnPage(root) {
  * Execute all page transformers for a specific hook.
  */
 function executeTransformers(hookName, element, payload) {
-  const transformers = [dnbCleanupTransformer, dnbSectionsTransformer];
+  const transformers = [cleanupTransformer, sectionsTransformer];
   transformers.forEach((transformerFn) => {
     try {
       transformerFn.call(null, hookName, element, payload);
@@ -122,7 +122,7 @@ export default {
     const { document, url, params } = payload;
     const originalURL = params.originalURL || url;
 
-    // Scope to <main> — the DNB page body. Floating widgets (chat/contact),
+    // Scope to <main> — the Company page body. Floating widgets (chat/contact),
     // header, and footer live outside <main> and must not leak into content.
     const main = document.querySelector('main') || document.body;
 

@@ -2,10 +2,10 @@
 /* global WebImporter */
 
 /**
- * Transformer: DNB cleanup.
- * Removes non-authorable site chrome from the DNB source pages so only the
+ * Transformer: Company cleanup.
+ * Removes non-authorable site chrome from the Company source pages so only the
  * main content sections remain before section splitting + block parsing.
- * Source: https://www.dnb.no/ (captured DOM: migration-work/cleaned.html).
+ * Source: https://www.company.example/ (captured DOM: migration-work/cleaned.html).
  */
 const TransformHook = { beforeTransform: 'beforeTransform', afterTransform: 'afterTransform' };
 
@@ -20,7 +20,7 @@ export default function transform(hookName, element, payload) {
       '[role="banner"]',
       'footer',
       '[role="contentinfo"]',
-      '.dnb-sr-only',
+      '.company-sr-only',
       '[class*="skip"]',
       '[class*="cookie"]',
       '[class*="Cookie"]',

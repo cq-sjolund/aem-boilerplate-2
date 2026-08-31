@@ -234,7 +234,7 @@
 /* ===== Cards Overlay variant (heading overlaid on full-bleed image) ===== */
 
 /*
- * DNB campaign cards: each card is a full-bleed image with the heading text
+ * Company campaign cards: each card is a full-bleed image with the heading text
  * overlaid on top of the image (bottom-left) plus an arrow indicator. The whole
  * card is a single clickable link (cards.js wraps it in .cards-card-link).
  * Distinct from cards-article (text below image) and cards-feature (glass

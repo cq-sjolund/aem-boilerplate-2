@@ -1,8 +1,8 @@
 /* stylelint-disable no-descending-specificity -- consolidated variant file */
 
 /*
- * DNB - Edge Delivery Services
- * Design system migrated from https://www.dnb.no/
+ * Company - Edge Delivery Services
+ * Design system migrated from https://www.company.example/
  */
 
 :root {
@@ -22,8 +22,8 @@
   --border-color-light: #e5e8e8;
 
   /* fonts */
-  --body-font-family: dnb, helvetica, arial, sans-serif;
-  --heading-font-family: dnb, helvetica, arial, sans-serif;
+  --body-font-family: company, helvetica, arial, sans-serif;
+  --heading-font-family: company, helvetica, arial, sans-serif;
 
   /* body sizes (mobile-first) */
   --body-font-size-m: 16px;
@@ -596,7 +596,7 @@ main .section.accent .tag-pill {
   background-color: var(--dark-color);
 }
 
-/* --- DNB DEFAULT-CONTENT SECTION STYLES --- */
+/* --- COMPANY DEFAULT-CONTENT SECTION STYLES --- */
 
 /* Product link bar: large underlined teal links spread in a row (Lån · Forsikring · …) */
 main > .section.productbar .default-content-wrapper > p {

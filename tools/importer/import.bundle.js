@@ -23,10 +23,10 @@ var CustomImportScript = (() => {
     default: () => import_default
   });
 
-  // tools/importer/parsers/dnb-hero-promo.js
+  // tools/importer/parsers/hero-promo.js
   function parse(element, { document }) {
-    const heading = element.querySelector("h2.dnb-h--large, h1, h2");
-    const cta = element.querySelector("a.dnb-button, a[href]");
+    const heading = element.querySelector("h2.company-h--large, h1, h2");
+    const cta = element.querySelector("a.company-button, a[href]");
     const imgs = [...element.querySelectorAll("img")];
     const img = imgs.find((i) => (i.getAttribute("alt") || "").trim().length > 0) || imgs[0];
     const imgCell = document.createElement("div");
@@ -59,9 +59,9 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/dnb-cards-article.js
+  // tools/importer/parsers/cards-article.js
   function findCards(section) {
-    const headings = [...section.querySelectorAll("h2.dnb-heading, h3.dnb-heading")];
+    const headings = [...section.querySelectorAll("h2.company-heading, h3.company-heading")];
     const cards = [];
     const seen = /* @__PURE__ */ new Set();
     headings.forEach((h) => {
@@ -118,7 +118,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/parsers/dnb-cards-overlay.js
+  // tools/importer/parsers/cards-overlay.js
   function parse3(element, { document }) {
     const items = [...element.querySelectorAll("ul > li")];
     const cells = [];
@@ -158,7 +158,7 @@ var CustomImportScript = (() => {
     element.replaceWith(block);
   }
 
-  // tools/importer/transformers/dnb-cleanup.js
+  // tools/importer/transformers/cleanup.js
   var TransformHook = { beforeTransform: "beforeTransform", afterTransform: "afterTransform" };
   function transform(hookName, element, payload) {
     if (hookName === TransformHook.beforeTransform) {
@@ -169,7 +169,7 @@ var CustomImportScript = (() => {
         '[role="banner"]',
         "footer",
         '[role="contentinfo"]',
-        ".dnb-sr-only",
+        ".company-sr-only",
         '[class*="skip"]',
         '[class*="cookie"]',
         '[class*="Cookie"]',
@@ -208,7 +208,7 @@ var CustomImportScript = (() => {
     }
   }
 
-  // tools/importer/transformers/dnb-sections.js
+  // tools/importer/transformers/sections.js
   var STYLE_DETECTORS = [
     {
       // Product link bar: a single paragraph/row containing 3-6 links and nothing
@@ -291,12 +291,12 @@ var CustomImportScript = (() => {
     {
       name: "hero-promo",
       // Single large heading + one CTA button + an image; not a repeating card grid.
-      match: (section) => section.querySelectorAll("h2.dnb-h--large, h1").length === 1 && !!section.querySelector("a.dnb-button, a[href]") && !!section.querySelector(".gatsby-image-wrapper, picture, img") && countCardUnits(section) < 2,
+      match: (section) => section.querySelectorAll("h2.company-h--large, h1").length === 1 && !!section.querySelector("a.company-button, a[href]") && !!section.querySelector(".gatsby-image-wrapper, picture, img") && countCardUnits(section) < 2,
       parser: parse
     }
   ];
   function countCardUnits(section) {
-    const headings = [...section.querySelectorAll("h2.dnb-heading, h3.dnb-heading")];
+    const headings = [...section.querySelectorAll("h2.company-heading, h3.company-heading")];
     const cards = /* @__PURE__ */ new Set();
     headings.forEach((h) => {
       let el = h.parentElement;

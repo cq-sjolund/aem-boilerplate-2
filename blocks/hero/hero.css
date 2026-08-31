@@ -295,7 +295,7 @@ main .hero a.button.secondary:any-link:hover {
 /* ===== Hero Promo variant (solid brand panel, side-by-side heading + image) ===== */
 
 /*
- * DNB-style banner: solid teal rounded panel, large white heading + one CTA on
+ * Company-style banner: solid teal rounded panel, large white heading + one CTA on
  * the left, lifestyle image on the right. No full-bleed overlay/gradient — the
  * colored panel is the design. Reuses hero.js structure: picture (image row) +
  * content div (heading + CTA).
@@ -351,7 +351,7 @@ main .hero a.button.secondary:any-link:hover {
   line-height: 1.2;
 }
 
-/* CTA on the teal panel: white pill with teal text (DNB pattern).
+/* CTA on the teal panel: white pill with teal text (Company pattern).
    Specificity 0,4,1 (with :any-link) to override base hero button rules. */
 main .hero.hero-promo a.button:any-link,
 main .hero.hero-promo a.button.primary:any-link,

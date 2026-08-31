@@ -2,20 +2,20 @@
 /* global WebImporter */
 
 /**
- * Transformer: DNB sections.
- * Inserts <hr> section breaks between the top-level content sections of a DNB
- * page. DNB wraps each section as `main > div > section`; this transformer
+ * Transformer: Company sections.
+ * Inserts <hr> section breaks between the top-level content sections of a Company
+ * page. Company wraps each section as `main > div > section`; this transformer
  * unwraps those <section> elements to the top level and separates them with
  * <hr> so EDS renders each as its own section.
  *
- * DNB's homepage sections are all on the default (light) background, so no
+ * Company's homepage sections are all on the default (light) background, so no
  * Section Metadata is emitted. Section styles are detected purely from the DOM;
  * if a future page introduces a themed section, extend STYLE_DETECTORS below.
  *
  * Runs in beforeTransform, AFTER cleanup (nav/footer already removed).
  */
 
-// Structural/style detectors keyed to EDS section styles. DNB uses obfuscated
+// Structural/style detectors keyed to EDS section styles. Company uses obfuscated
 // class names, so styles are detected from DOM shape, not semantic class names.
 const STYLE_DETECTORS = [
   {

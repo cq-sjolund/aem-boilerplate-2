@@ -2,8 +2,8 @@
 /* global WebImporter */
 
 /**
- * Parser for cards (cards-overlay) variant — DNB campaign card row.
- * Base: cards. Source: https://www.dnb.no/
+ * Parser for cards (cards-overlay) variant — Company campaign card row.
+ * Base: cards. Source: https://www.company.example/
  * Detected structurally: a section whose <ul> has >= 2 <li> items, each a single
  * <a> link containing both an image and a heading (heading overlaid on image).
  *
