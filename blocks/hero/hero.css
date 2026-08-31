@@ -53,12 +53,19 @@ main > .hero-container {
 }
 
 .hero > div {
-  position: relative;
-  z-index: 2;
   max-width: var(--container-max-width);
   width: 100%;
   margin: 0 auto;
   text-align: left;
+}
+
+/* Only lift the row above the full-bleed image/overlay when it holds text
+   content on its own. When a row also contains the <picture> (default hero:
+   image + h1 share one cell), leave it unpositioned so the picture's
+   `inset: 0` resolves against .hero itself instead of this row. */
+.hero > div:not(:has(picture)) {
+  position: relative;
+  z-index: 2;
 }
 
 .hero h1,
@@ -67,6 +74,8 @@ main > .hero-container {
 .hero h4,
 .hero h5,
 .hero h6 {
+  position: relative;
+  z-index: 2;
   color: var(--background-color);
   margin-bottom: var(--gap-lg);
   text-shadow: 0 1px 3px rgb(0 0 0 / 35%);
