@@ -1,0 +1,11 @@
+.quote blockquote {
+  margin: 0;
+  font-size: 1.25rem;
+  font-style: italic;
+}  
+
+.quote footer {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  text-align: right;
+}
