@@ -5,11 +5,42 @@
 }
 
 .accordion summary {
+  position: relative;
   cursor: pointer;
-  padding: 8px;
+  list-style: none;
+  padding: 8px 32px 8px 8px;
   background-color: var(--background-color);
+}
+
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion summary::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid;
+  border-width: 0 2px 2px 0;
+  transform: translateY(-65%) rotate(45deg);
+  transition: transform 0.2s;
+}
+
+.accordion details[open] summary {
+  background-color: var(--light-color);
+}
+
+.accordion details[open] summary::after {
+  transform: translateY(-35%) rotate(-135deg);
 }
 
 .accordion .accordion-item-body {
   padding: 8px;
+}
+
+.accordion details[open] .accordion-item-body {
+  border-top: 1px solid var(--border-color);
 }
