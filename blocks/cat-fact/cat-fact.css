@@ -1,12 +1,28 @@
+.cat-fact {
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+
 .cat-fact .cat-fact-text {
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   font-size: 16px;
 }
 
 .cat-fact .cat-fact-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--brand-teal);
+  border-radius: var(--button-border-radius);
+  padding: var(--button-padding);
+  background-color: var(--brand-teal);
+  color: var(--background-color);
+  font-family: var(--button-font-family);
+  font-size: var(--button-font-size);
+  font-weight: var(--button-font-weight);
   cursor: pointer;
-  padding: 4px 8px;
-  font-size: 14px;
+  transition: var(--button-transition);
 }
 
 .cat-fact .cat-fact-button:disabled {
@@ -14,6 +30,11 @@
   opacity: 0.5;
 }
 
-.cat-fact .cat-fact-button:not(:disabled):hover {
-  background-color: var(--light-color);
+.cat-fact .cat-fact-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
+
+.cat-fact .cat-fact-button:active:not(:disabled) {
+  transform: translateY(0);
 }
