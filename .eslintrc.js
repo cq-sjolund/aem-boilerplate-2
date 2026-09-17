@@ -21,6 +21,9 @@ module.exports = {
       env: {
         mocha: true,
       },
+      rules: {
+        'no-unused-expressions': 'off', // allow Chai BDD getter assertions, e.g. expect(x).to.exist
+      },
     },
   ],
 };
