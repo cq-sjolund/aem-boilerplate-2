@@ -1,0 +1,13 @@
+.accordion details {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+.accordion summary {
+  cursor: pointer;
+  padding: 8px;
+  background-color: var(--background-color);
+}
+.accordion .accordion-item-body {
+  padding: 8px;
+}
