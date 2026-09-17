@@ -1,0 +1,19 @@
+.cat-fact .cat-fact-text {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.cat-fact .cat-fact-button {
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.cat-fact .cat-fact-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.cat-fact .cat-fact-button:not(:disabled):hover {
+  background-color: var(--light-color);
+}
