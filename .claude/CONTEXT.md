@@ -76,3 +76,26 @@ shipping code, so prioritize teaching and verification over speed.
 - **`cat-fact`** — first block with no authored content (fully API-driven),
   first `async decorate()`, loading/error UI states, first click handler in
   this series, `fetch` mocking in tests.
+- **`tabs`** — first hand-rolled ARIA widget (no native browser behavior like
+  `accordion`'s `<details>`): `role="tablist"`/`role="tab"`/`role="tabpanel"`,
+  `aria-selected`, keyboard arrow-key navigation, single-active-panel state.
+
+## Ideas for future blocks
+
+Not yet built, picked to each teach something genuinely new:
+
+- **Image carousel/gallery** — multiple images per row, `createOptimizedPicture`
+  (the responsive-image helper `cards.js` already uses), prev/next navigation,
+  announcing slide changes to screen readers (`aria-live`).
+- **Countdown timer** ("sale ends in...") — `setInterval`/`clearInterval`, and
+  the EDS-specific lifecycle question of cleanup if the block is removed from
+  the DOM before the interval fires.
+- **Client-side search/filter over a spreadsheet-backed index**
+  (`/query-index.json`) — an idiomatic EDS pattern (authored spreadsheet
+  exposed as JSON), debounced text input, filtering/re-rendering a list
+  client-side. Bridges `cat-fact`'s external API to EDS's own
+  content-as-data model.
+- **Modal/lightbox using the native `<dialog>` element** — another native
+  element with built-in semantics, but a more involved contract than
+  `<details>`: no auto-open-on-click, you call `.showModal()`/`.close()`
+  yourself, plus focus trapping and Escape-to-close.
