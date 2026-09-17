@@ -20,6 +20,7 @@ module.exports = {
       files: ['**/*.test.js'],
       env: {
         mocha: true,
+        es2020: true, // for globalThis, used when mocking fetch in tests
       },
       rules: {
         'no-unused-expressions': 'off', // allow Chai BDD getter assertions, e.g. expect(x).to.exist
