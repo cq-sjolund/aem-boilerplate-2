@@ -1,12 +1,12 @@
 .cat-fact {
-  padding: 16px;
+  padding: var(--gap-md);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--border-radius-sm);
 }
 
 .cat-fact .cat-fact-text {
-  margin: 0 0 12px;
-  font-size: 16px;
+  margin: 0 0 var(--gap-xs);
+  font-size: var(--body-font-size-m);
 }
 
 .cat-fact .cat-fact-button {

@@ -1,12 +1,9 @@
 .quote blockquote {
   margin: 0;
-  font-size: 20px;
-  font-style: italic;
 }
 
 .quote footer {
-  margin-top: 8px;
-  font-size: 16px;
+  margin-top: var(--gap-sm);
+  font-size: var(--body-font-size-m);
   text-align: right;
-  padding: 4px;
 }
