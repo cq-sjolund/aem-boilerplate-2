@@ -35,6 +35,7 @@ function getCountDownSegment(value, label) {
 function getCountDownTimer(targetTime) {
   const countDownTimer = document.createElement('div');
   countDownTimer.className = 'countdown-timer';
+  countDownTimer.hidden = true;
   const {
     days, hours, minutes, seconds,
   } = getTimeRemaining(targetTime);
@@ -47,19 +48,20 @@ function getCountDownTimer(targetTime) {
   return countDownTimer;
 }
 
-function updateCountDown(targetTime, block) {
-  if (!block.isConnected) return false;
-
+// Computes the current state and paints it. Does not check whether `block`
+// is still on the page — that's only relevant for the *recurring* interval
+// tick (see decorate()), not for this function's first, synchronous call.
+function renderCountDown(targetTime, block) {
   const countDownTimer = block.querySelector('.countdown-timer');
+  if (!countDownTimer) return false;
+
+  countDownTimer.hidden = false;
+
   if (Date.now() >= targetTime) {
-    if (countDownTimer) {
-      countDownTimer.textContent = 'Offer has ended';
-      countDownTimer.className = 'countdown-ended';
-    }
+    countDownTimer.textContent = 'Offer has ended';
+    countDownTimer.className = 'countdown-ended';
     return false;
   }
-
-  if (!countDownTimer) return false;
 
   const {
     days, hours, minutes, seconds,
@@ -98,8 +100,12 @@ export default function decorate(block) {
 
   block.replaceChildren(...children);
 
+  if (!renderCountDown(targetTime, block)) {
+    return;
+  }
+
   const intervalId = setInterval(() => {
-    if (!updateCountDown(targetTime, block)) {
+    if (!block.isConnected || !renderCountDown(targetTime, block)) {
       clearInterval(intervalId);
     }
   }, 1000);
