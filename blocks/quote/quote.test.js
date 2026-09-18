@@ -27,4 +27,17 @@ describe('quote block', () => {
 
     expect(block.querySelector('footer')).to.equal(null);
   });
+
+  it('does not render "undefined" when the quote text row is missing', async () => {
+    document.body.innerHTML = `
+      <div class="quote">
+        <div><div>quote-attribution</div><div>Alan Kay</div></div>
+      </div>
+    `;
+    const block = document.querySelector('.quote');
+    await decorate(block);
+
+    expect(block.querySelector('blockquote')).to.equal(null);
+    expect(block.textContent).to.not.include('undefined');
+  });
 });

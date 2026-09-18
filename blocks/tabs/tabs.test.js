@@ -135,4 +135,11 @@ describe('tabs block', () => {
     expect(block.querySelectorAll('[role="tab"]')).to.have.lengthOf(1);
     expect(block.querySelector('[role="tab"]').textContent.trim()).to.equal('Tab One');
   });
+
+  it('does not throw and renders nothing when every row is invalid', () => {
+    const block = document.createElement('div');
+    block.append(buildRow('', 'Panel one'));
+    expect(() => decorate(block)).to.not.throw();
+    expect(block.querySelectorAll('[role="tab"]')).to.have.lengthOf(0);
+  });
 });

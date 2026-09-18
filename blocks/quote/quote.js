@@ -3,8 +3,15 @@ import { readBlockConfig } from '../../scripts/aem.js';
 export default function decorate(block) {
   const config = readBlockConfig(block);
 
+  const quoteText = config['quote-text'];
+  if (!quoteText) {
+    // eslint-disable-next-line no-console
+    console.warn('quote block is missing required "Quote Text" row; skipping decoration');
+    return;
+  }
+
   const blockquote = document.createElement('blockquote');
-  blockquote.textContent = config['quote-text'];
+  blockquote.textContent = quoteText;
   const children = [blockquote];
   const attributionText = config['quote-attribution'];
   if (attributionText) {

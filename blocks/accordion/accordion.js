@@ -1,7 +1,7 @@
 export default function decorate(block) {
   const children = [];
   [...block.children].forEach((row) => {
-    if (!row.children[1]) return;
+    if (!row.children[1] || !row.children[0].textContent.trim()) return;
     const details = document.createElement('details');
     const summary = document.createElement('summary');
     summary.className = 'accordion-item-label';

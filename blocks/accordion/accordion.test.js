@@ -57,4 +57,12 @@ describe('accordion block', () => {
     block.append(row);
     expect(() => decorate(block)).to.not.throw();
   });
+
+  it('skips a row with an empty label so it does not produce a nameless summary', () => {
+    const block = document.createElement('div');
+    block.append(buildRow('Summary', 'Body'), buildRow('', 'Body 2'));
+    decorate(block);
+    expect(block.querySelectorAll('details')).to.have.lengthOf(1);
+    expect(block.querySelector('summary').textContent).to.equal('Summary');
+  });
 });

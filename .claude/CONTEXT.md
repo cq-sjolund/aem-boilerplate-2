@@ -39,6 +39,18 @@ shipping code, so prioritize teaching and verification over speed.
   own CSS is the only thing affecting its rendering.
 - **Git**: the user commits and pushes manually from their own terminal.
   Don't run `git commit`/`git push` on their behalf unless explicitly asked.
+- **Every block has a `README.md`** documenting its content contract, a DA
+  authoring example, expected markup before and after decoration (verified
+  against real `curl .../*.plain.html` output and/or real browser DOM, not
+  guessed), and any resilience/behavior notes specific to that block. Add one
+  for any new block.
+- **When external review findings show up** (e.g. a `peer-review-findings.md`
+  dropped into a block folder), verify each claim against the actual current
+  code before acting — don't apply fixes on trust. Findings can be stale,
+  already fixed, or simply wrong. Apply well-contained, clearly-correct fixes
+  directly; flag larger architectural tradeoffs (e.g. changing whether
+  `decorate()` blocks on a network call, which changes test timing
+  assumptions) before restructuring, since those ripple into other files.
 
 ## Testing setup (added deliberately, opt-in)
 

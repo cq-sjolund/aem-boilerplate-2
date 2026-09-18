@@ -21,6 +21,12 @@ function mockFetch() {
   };
 }
 
+// decorate() no longer awaits the fetch (fire-and-forget), so tests wait a
+// tick after resolving the mocked fetch for the resulting DOM update to land.
+function settle() {
+  return new Promise((resolve) => { setTimeout(resolve, 0); });
+}
+
 describe('cat-fact block', () => {
   let fetchMock;
 
@@ -28,37 +34,42 @@ describe('cat-fact block', () => {
     fetchMock?.restore();
   });
 
-  it('should decorate the block with a cat fact text and button', async () => {
+  it('should decorate the block with a cat fact text and button', () => {
     fetchMock = mockFetch();
     const block = document.createElement('div');
     block.className = 'cat-fact';
-    const decoratePromise = decorate(block);
-    fetchMock.resolveWith({ ok: true, json: async () => ({ fact: 'Test fact' }) });
-    await decoratePromise;
+    decorate(block);
     const text = block.querySelector('.cat-fact-text');
     const button = block.querySelector('.cat-fact-button');
     expect(text).to.exist;
     expect(button).to.exist;
   });
 
-  it('should display a loading message initially', async () => {
+  it('marks the fact text as an aria-live region so updates are announced', () => {
     fetchMock = mockFetch();
     const block = document.createElement('div');
     block.className = 'cat-fact';
-    const decoratePromise = decorate(block);
+    decorate(block);
+    const text = block.querySelector('.cat-fact-text');
+    expect(text.getAttribute('aria-live')).to.equal('polite');
+  });
+
+  it('should display a loading message initially', () => {
+    fetchMock = mockFetch();
+    const block = document.createElement('div');
+    block.className = 'cat-fact';
+    decorate(block);
     const text = block.querySelector('.cat-fact-text');
     expect(text.textContent).to.equal('Loading…');
-    fetchMock.resolveWith({ ok: true, json: async () => ({ fact: 'Test fact' }) });
-    await decoratePromise;
   });
 
   it('should enable the button after loading a fact', async () => {
     fetchMock = mockFetch();
     const block = document.createElement('div');
     block.className = 'cat-fact';
-    const decoratePromise = decorate(block);
+    decorate(block);
     fetchMock.resolveWith({ ok: true, json: async () => ({ fact: 'Test fact' }) });
-    await decoratePromise;
+    await settle();
     const button = block.querySelector('.cat-fact-button');
     expect(button.disabled).to.be.false;
   });
@@ -67,9 +78,9 @@ describe('cat-fact block', () => {
     fetchMock = mockFetch();
     const block = document.createElement('div');
     block.className = 'cat-fact';
-    const decoratePromise = decorate(block);
+    decorate(block);
     fetchMock.resolveWith({ ok: false, status: 500 });
-    await decoratePromise;
+    await settle();
     const text = block.querySelector('.cat-fact-text');
     expect(text.textContent).to.equal("Couldn't load a cat fact. Try again.");
   });
@@ -78,9 +89,9 @@ describe('cat-fact block', () => {
     fetchMock = mockFetch();
     const block = document.createElement('div');
     block.className = 'cat-fact';
-    const initialLoad = decorate(block);
+    decorate(block);
     fetchMock.resolveWith({ ok: true, json: async () => ({ fact: 'First fact' }) });
-    await initialLoad;
+    await settle();
 
     const text = block.querySelector('.cat-fact-text');
     const button = block.querySelector('.cat-fact-button');
@@ -89,7 +100,7 @@ describe('cat-fact block', () => {
     button.click();
     expect(text.textContent).to.equal('Loading…');
     fetchMock.resolveWith({ ok: true, json: async () => ({ fact: 'Second fact' }) });
-    await new Promise((resolve) => { setTimeout(resolve, 0); });
+    await settle();
     expect(text.textContent).to.equal('Second fact');
   });
 
@@ -97,9 +108,9 @@ describe('cat-fact block', () => {
     fetchMock = mockFetch();
     const block = document.createElement('div');
     block.className = 'cat-fact';
-    const initialLoad = decorate(block);
+    decorate(block);
     fetchMock.resolveWith({ ok: true, json: async () => ({ fact: 'First fact' }) });
-    await initialLoad;
+    await settle();
 
     const button = block.querySelector('.cat-fact-button');
 
@@ -107,7 +118,7 @@ describe('cat-fact block', () => {
     button.click();
     expect(button.disabled).to.be.true;
     fetchMock.resolveWith({ ok: true, json: async () => ({ fact: 'Second fact' }) });
-    await new Promise((resolve) => { setTimeout(resolve, 0); });
+    await settle();
     expect(button.disabled).to.be.false;
   });
 });

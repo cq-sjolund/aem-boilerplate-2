@@ -7,6 +7,12 @@ export default function decorate(block) {
     (row) => row.children[1] && row.children[0].textContent.trim(),
   );
 
+  if (!rows.length) {
+    // eslint-disable-next-line no-console
+    console.warn('tabs block has no valid rows (each row needs a label and panel cell); skipping decoration');
+    return;
+  }
+
   const tablist = document.createElement('div');
   tablist.className = 'tabs-list';
   tablist.setAttribute('role', 'tablist');
