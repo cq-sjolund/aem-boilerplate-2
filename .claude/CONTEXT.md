@@ -91,6 +91,15 @@ shipping code, so prioritize teaching and verification over speed.
 - **`tabs`** — first hand-rolled ARIA widget (no native browser behavior like
   `accordion`'s `<details>`): `role="tablist"`/`role="tab"`/`role="tabpanel"`,
   `aria-selected`, keyboard arrow-key navigation, single-active-panel state.
+- **`countdown`** — first self-updating-over-time block (`setInterval`), the
+  EDS-specific lifecycle question of cleanup if the block is removed from the
+  DOM (`block.isConnected`) or once the countdown naturally expires, and a
+  multi-round peer-review cycle that caught real bugs a first read missed
+  (label rendering the literal string `"undefined"`, missing zero-padding,
+  dead "skip if unchanged" comparison, a flash-of-wrong-content before the
+  first render). Ended up as the most heavily-tested block (176 test lines vs.
+  117 JS) — a good concrete example of what "well-tested" actually costs for
+  stateful/async code vs. the simpler synchronous blocks.
 
 ## Ideas for future blocks
 
@@ -99,9 +108,6 @@ Not yet built, picked to each teach something genuinely new:
 - **Image carousel/gallery** — multiple images per row, `createOptimizedPicture`
   (the responsive-image helper `cards.js` already uses), prev/next navigation,
   announcing slide changes to screen readers (`aria-live`).
-- **Countdown timer** ("sale ends in...") — `setInterval`/`clearInterval`, and
-  the EDS-specific lifecycle question of cleanup if the block is removed from
-  the DOM before the interval fires.
 - **Client-side search/filter over a spreadsheet-backed index**
   (`/query-index.json`) — an idiomatic EDS pattern (authored spreadsheet
   exposed as JSON), debounced text input, filtering/re-rendering a list
