@@ -6,13 +6,6 @@ that updates itself over time rather than only in response to user
 interaction — see `.claude/CONTEXT.md` for why this one was picked to learn
 from.
 
-> **Status: spec only.** This document is the agreed content contract and
-> target markup, written *before* `countdown.js`/`countdown.css` are
-> implemented. Update the "before/after decoration" examples once the block
-> is built and verified against real `curl`/browser output, same as the
-> other three blocks' READMEs — don't leave this doc describing an aspirational
-> design once the real implementation exists.
-
 ## Content contract
 
 Two labeled rows, read via `readBlockConfig()` (fixed fields, not a
@@ -26,9 +19,11 @@ repeating list — same pattern as `quote`):
 2. **Label** (optional) — text shown above the countdown, e.g.
    "Sale ends in". If omitted, no label is rendered.
 
-If "Target Date" is missing or isn't a parseable ISO date, the block should
-warn (console) and skip decoration — same pattern as `quote`'s missing
-"Quote Text" guard — rather than showing `NaN`/`Invalid Date` to the visitor.
+If "Target Date" is missing or isn't a parseable ISO date, the block warns
+(console) and removes itself from the page (`block.remove()`) — same pattern
+as `quote`'s missing "Quote Text" guard and `tabs`' all-rows-invalid case —
+rather than showing `NaN`/`Invalid Date`, or leaving the raw unstyled
+authored table visible, to a real visitor.
 
 ## Authoring in DA (or Google Docs/Word)
 
@@ -37,7 +32,7 @@ warn (console) and skip decoration — same pattern as `quote`'s missing
 | Target Date | 2026-12-31T23:59:59 |
 | Label | Sale ends in |
 
-## Expected markup before decoration (draft — verify once built)
+## Expected markup before decoration
 
 ```html
 <div class="countdown">
@@ -52,7 +47,14 @@ warn (console) and skip decoration — same pattern as `quote`'s missing
 </div>
 ```
 
-## Expected markup after decoration (draft — verify once built)
+## Expected markup after decoration
+
+Verified against `countdown.js` and its test suite (36 tests covering the
+happy path, expiry, invalid/missing input, zero-padding, `aria-live`, and
+interval cleanup), and spot-checked live against a real headless Chrome
+instance hitting the running dev server — the actual decorated markup
+matched this spec exactly (`aria-live="polite"`, zero-padded values, label
+present).
 
 While counting down:
 
@@ -68,9 +70,23 @@ While counting down:
 </div>
 ```
 
-Once the target date/time has passed, the `.countdown-timer` segments are
-replaced with a plain message (e.g. "Offer has ended") rather than showing
-negative numbers or continuing to tick.
+Once the target date/time has passed:
+
+```html
+<div class="countdown block" data-block-name="countdown" data-block-status="loaded">
+  <p class="countdown-label">Sale ends in</p>
+  <div class="countdown-ended" aria-live="polite">Offer has ended</div>
+</div>
+```
+
+Note this is the *same DOM element* as `.countdown-timer` above, not a
+replacement — `renderCountdown()` sets `className = 'countdown-ended'` and
+`textContent = 'Offer has ended'` directly on it, rather than removing it and
+creating a new one. Two consequences worth knowing: the element no longer
+matches `.countdown-timer` once expired (so `block.querySelector('.countdown-timer')`
+returns `null` after expiry — this bit a test earlier in development), and
+the `aria-live="polite"` attribute set when the element was first created
+persists through to this state for free, since the same node is reused.
 
 ## Lifecycle / cleanup (the new concept this block teaches)
 

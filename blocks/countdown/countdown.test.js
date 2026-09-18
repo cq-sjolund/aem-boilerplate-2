@@ -103,4 +103,74 @@ describe('countdown block', () => {
     expect(block.querySelector('.countdown-ended')).to.exist;
     expect(block.querySelector('.countdown-timer')).to.not.exist;
   });
+
+  it('should omit the label when it is not provided, without rendering "undefined"', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `
+      <div>
+        <div>target-date</div>
+        <div>2099-12-31T23:59:59</div>
+      </div>
+    `;
+    decorate(block);
+    expect(block.querySelector('.countdown-label')).to.not.exist;
+    expect(block.querySelector('.countdown-timer')).to.exist;
+    expect(block.textContent).to.not.include('undefined');
+  });
+
+  it('should zero-pad single-digit values', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `
+      <div>
+        <div>target-date</div>
+        <div>${new Date(Date.now() + 5000).toISOString()}</div>
+      </div>
+      <div>
+        <div>label</div>
+        <div>Sale ends in</div>
+      </div>
+    `;
+    decorate(block);
+    const [daysValue] = block.querySelectorAll('.countdown-value');
+    expect(daysValue.textContent).to.equal('00');
+  });
+
+  it('should mark the timer as an aria-live region', () => {
+    const block = document.createElement('div');
+    block.innerHTML = `
+      <div>
+        <div>target-date</div>
+        <div>2099-12-31T23:59:59</div>
+      </div>
+      <div>
+        <div>label</div>
+        <div>Sale ends in</div>
+      </div>
+    `;
+    decorate(block);
+    expect(block.querySelector('.countdown-timer').getAttribute('aria-live')).to.equal('polite');
+  });
+
+  it('should stop ticking once the block is removed from the page', async () => {
+    const block = document.createElement('div');
+    block.innerHTML = `
+      <div>
+        <div>target-date</div>
+        <div>${new Date(Date.now() + 60000).toISOString()}</div>
+      </div>
+      <div>
+        <div>label</div>
+        <div>Sale ends in</div>
+      </div>
+    `;
+    document.body.append(block);
+    decorate(block);
+    block.remove();
+
+    const secondsBefore = block.querySelectorAll('.countdown-value')[3].textContent;
+    await new Promise((resolve) => { setTimeout(resolve, 1200); });
+    const secondsAfter = block.querySelectorAll('.countdown-value')[3].textContent;
+
+    expect(secondsAfter).to.equal(secondsBefore);
+  });
 });

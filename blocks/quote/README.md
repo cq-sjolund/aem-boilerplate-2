@@ -73,9 +73,9 @@ the cell's DOM structure.
 
 - Missing/empty "Quote Text" — `decorate()` logs a warning
   (`quote block is missing required "Quote Text" row; skipping decoration`)
-  and returns without touching the block, leaving the raw authored markup in
-  place rather than rendering the literal string `"undefined"` (a real bug
-  found in review: assigning `undefined` to `.textContent` coerces it to that
-  string) or a blank block.
+  and removes the block from the page (`block.remove()`), rather than
+  rendering the literal string `"undefined"` (a real bug found in review:
+  assigning `undefined` to `.textContent` coerces it to that string) or
+  leaving the raw, unstyled authored table visible to real visitors.
 - Missing "Quote Attribution" — handled gracefully; the `<footer>` is simply
   not rendered.

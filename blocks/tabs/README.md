@@ -117,7 +117,9 @@ A row missing its second cell (no panel content), or with an empty label, is
 filtered out before building the tablist — same principle as `accordion`'s
 handling of a missing answer cell, extended here to also cover an empty
 label, since an empty `<button role="tab">` would have no accessible name
-(fails WCAG 4.1.2).
+(fails WCAG 4.1.2). If every row turns out invalid, `decorate()` logs a
+warning and removes the block from the page (`block.remove()`) rather than
+leaving the raw, unstyled authored table visible to real visitors.
 
 ## Responsive behavior
 

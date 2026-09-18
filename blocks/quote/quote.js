@@ -7,6 +7,7 @@ export default function decorate(block) {
   if (!quoteText) {
     // eslint-disable-next-line no-console
     console.warn('quote block is missing required "Quote Text" row; skipping decoration');
+    block.remove();
     return;
   }
 

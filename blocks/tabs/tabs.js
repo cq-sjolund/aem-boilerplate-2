@@ -10,6 +10,7 @@ export default function decorate(block) {
   if (!rows.length) {
     // eslint-disable-next-line no-console
     console.warn('tabs block has no valid rows (each row needs a label and panel cell); skipping decoration');
+    block.remove();
     return;
   }
 
