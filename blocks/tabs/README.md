@@ -11,13 +11,20 @@ all tab switching, ARIA state, and keyboard navigation is implemented in
 
 One row per tab. Each row has exactly two cells:
 
-1. **Tab label** — the always-visible clickable text/heading for the tab.
+1. **Tab label** — the always-visible clickable text for the tab. Keep this
+   plain text or simple inline formatting (bold, italic). Do **not** put a
+   link or button in the label: the label is moved into an actual
+   `<button>` element, and nesting interactive content (a link, another
+   button) inside a `<button>` is invalid HTML and produces unpredictable
+   keyboard/screen-reader behavior. Links and buttons are fine inside the
+   **panel** content.
 2. **Tab panel content** — the content shown when that tab is active. Can
    contain rich formatting (links, bold text, lists, etc.) — it is not
    reduced to plain text.
 
-A row with only one cell (missing panel content) is skipped entirely rather
-than breaking the block; see "Resilience" below.
+A row with only one cell (missing panel content), or an empty label, is
+skipped entirely rather than breaking the block or producing a nameless tab;
+see "Resilience" below.
 
 ## Authoring in DA (or Google Docs/Word)
 
@@ -106,6 +113,14 @@ Notes:
 
 ## Resilience
 
-A row missing its second cell (no panel content) is filtered out before
-building the tablist, so one malformed row doesn't break the rest of the
-tabs — same principle as `accordion`'s handling of a missing answer cell.
+A row missing its second cell (no panel content), or with an empty label, is
+filtered out before building the tablist — same principle as `accordion`'s
+handling of a missing answer cell, extended here to also cover an empty
+label, since an empty `<button role="tab">` would have no accessible name
+(fails WCAG 4.1.2).
+
+## Responsive behavior
+
+The tab list scrolls horizontally (`overflow-x: auto`) rather than wrapping
+or squeezing tab labels, so it stays usable with several tabs on a narrow
+viewport.

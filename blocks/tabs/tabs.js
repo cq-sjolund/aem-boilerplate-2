@@ -3,7 +3,9 @@ let instanceCount = 0;
 export default function decorate(block) {
   instanceCount += 1;
   const instanceId = instanceCount;
-  const rows = [...block.children].filter((row) => row.children[1]);
+  const rows = [...block.children].filter(
+    (row) => row.children[1] && row.children[0].textContent.trim(),
+  );
 
   const tablist = document.createElement('div');
   tablist.className = 'tabs-list';

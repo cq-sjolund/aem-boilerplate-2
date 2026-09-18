@@ -126,4 +126,13 @@ describe('tabs block', () => {
     expect(() => decorate(block)).to.not.throw();
     expect(block.querySelectorAll('[role="tab"]')).to.have.lengthOf(1);
   });
+
+  it('skips a row with an empty label so it does not produce a nameless tab', () => {
+    const block = document.createElement('div');
+    block.append(buildRow('Tab One', 'Panel one'), buildRow('', 'Panel two'));
+    decorate(block);
+
+    expect(block.querySelectorAll('[role="tab"]')).to.have.lengthOf(1);
+    expect(block.querySelector('[role="tab"]').textContent.trim()).to.equal('Tab One');
+  });
 });

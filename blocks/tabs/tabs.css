@@ -1,10 +1,12 @@
 .tabs .tabs-list {
   display: flex;
   gap: var(--gap-sm);
+  overflow-x: auto;
   border-bottom: 1px solid var(--border-color);
 }
 
 .tabs .tabs-tab {
+  flex: none;
   margin: 0;
   border: none;
   border-bottom: 2px solid transparent;
@@ -12,6 +14,7 @@
   padding: var(--gap-sm) var(--gap-md);
   color: var(--text-color-muted);
   font: inherit;
+  white-space: nowrap;
   cursor: pointer;
 }
 
