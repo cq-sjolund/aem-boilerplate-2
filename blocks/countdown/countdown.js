@@ -47,6 +47,34 @@ function getCountDownTimer(targetTime) {
   return countDownTimer;
 }
 
+function updateCountDown(targetTime, block) {
+  if (!block.isConnected) return false;
+
+  const countDownTimer = block.querySelector('.countdown-timer');
+  if (Date.now() >= targetTime) {
+    if (countDownTimer) {
+      countDownTimer.textContent = 'Offer has ended';
+      countDownTimer.className = 'countdown-ended';
+    }
+    return false;
+  }
+
+  if (!countDownTimer) return false;
+
+  const {
+    days, hours, minutes, seconds,
+  } = getTimeRemaining(targetTime);
+
+  const valueElements = countDownTimer.querySelectorAll('.countdown-value');
+  [days, hours, minutes, seconds].forEach((value, i) => {
+    if (valueElements[i].textContent !== value) {
+      valueElements[i].textContent = value;
+    }
+  });
+
+  return true;
+}
+
 function isValidConfig(targetDate, targetTime) {
   if (!targetDate || Number.isNaN(targetTime)) {
     // eslint-disable-next-line no-console
@@ -69,4 +97,10 @@ export default function decorate(block) {
   children.push(getCountDownTimer(targetTime));
 
   block.replaceChildren(...children);
+
+  const intervalId = setInterval(() => {
+    if (!updateCountDown(targetTime, block)) {
+      clearInterval(intervalId);
+    }
+  }, 1000);
 }
