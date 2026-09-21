@@ -1,4 +1,3 @@
-
 function getCarouselSlides(rows) {
   const carouselSlides = document.createElement('div');
   carouselSlides.className = 'carousel-slides';
@@ -6,6 +5,7 @@ function getCarouselSlides(rows) {
   rows.forEach(row => {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
+    slide.setAttribute('hidden', '');
     row.querySelectorAll('picture').forEach(picture => {
       slide.append(picture);
     });
@@ -32,6 +32,23 @@ function getCarouselButton(className, label) {
   return button;
 }
 
+function addEventListenersButtons(previousButton, nextButton, slides) {
+  // Add event listeners for carousel navigation buttons - move to new function for better modularity
+  let currentIndex = 0;
+
+  previousButton.addEventListener('click', () => {
+    slides.children[currentIndex].setAttribute('hidden', '');
+    currentIndex = (currentIndex - 1 + slides.children.length) % slides.children.length;
+    slides.children[currentIndex].removeAttribute('hidden');
+  });
+
+  nextButton.addEventListener('click', () => {
+    slides.children[currentIndex].setAttribute('hidden', '');
+    currentIndex = (currentIndex + 1) % slides.children.length;
+    slides.children[currentIndex].removeAttribute('hidden');
+  });
+}
+
 export default function decorate(block) {
   const rows = [...block.children].filter((row) => row.children[0]?.querySelector('img'));
 
@@ -42,9 +59,20 @@ export default function decorate(block) {
   }
 
   const children = [];
-  children.push(getCarouselSlides(rows));
-  children.push(getCarouselButton('carousel-prev', 'Previous'));
-  children.push(getCarouselButton('carousel-next', 'Next'));
-  console.log(children);
+  const slides = getCarouselSlides(rows);
+  const previousButton = getCarouselButton('carousel-prev', 'Previous');
+  const nextButton = getCarouselButton('carousel-next', 'Next');
+  children.push(slides);
+  children.push(previousButton);
+  children.push(nextButton);
+
+  // Unhide the first slide by removing the 'hidden' attribute
+  slides.children[0].removeAttribute('hidden');
+
+  // Add event listeners for carousel navigation buttons - move to new function for better modularity
+  addEventListenersButtons(previousButton, nextButton, slides);
+
+  // TODO: Fix styling for the Prev and Next buttons
+
   block.replaceChildren(...children);
 }
