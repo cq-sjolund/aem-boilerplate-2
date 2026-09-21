@@ -295,4 +295,85 @@ describe('carousel block', () => {
 
     expect(document.body.contains(block)).to.be.false;
   });
+
+  it('does not throw when a row is missing the caption cell', () => {
+    document.body.innerHTML = `
+      <div class="carousel">
+        <div>
+            <div><picture><img src="..." alt=""></picture></div>
+        </div>
+      </div>
+    `;
+    const block = document.querySelector('.carousel');
+    expect(() => decorate(block)).to.not.throw();
+    expect(block.querySelector('.carousel-slide')).to.exist;
+    expect(block.querySelector('.carousel-caption')).to.not.exist;
+  });
+
+  it('sets type="button" and descriptive aria-label text on the nav buttons', async () => {
+    document.body.innerHTML = `
+      <div class="carousel">
+        <div>
+            <div><picture><img src="..." alt=""></picture></div>
+            <div>First slide caption</div>
+        </div>
+        <div>
+            <div><picture><img src="..." alt=""></picture></div>
+            <div>Second slide caption</div>
+        </div>
+      </div>
+    `;
+    const block = document.querySelector('.carousel');
+    await decorate(block);
+
+    const prevButton = block.querySelector('.carousel-prev');
+    const nextButton = block.querySelector('.carousel-next');
+    expect(prevButton.type).to.equal('button');
+    expect(nextButton.type).to.equal('button');
+    expect(prevButton.getAttribute('aria-label')).to.equal('Previous slide');
+    expect(nextButton.getAttribute('aria-label')).to.equal('Next slide');
+  });
+
+  it('optimizes each slide image, marking only the first as eager', async () => {
+    document.body.innerHTML = `
+      <div class="carousel">
+        <div>
+            <div><picture><img src="/media/test-image.jpg" alt="First"></picture></div>
+            <div>First slide caption</div>
+        </div>
+        <div>
+            <div><picture><img src="/media/test-image-2.jpg" alt="Second"></picture></div>
+            <div>Second slide caption</div>
+        </div>
+      </div>
+    `;
+    const block = document.querySelector('.carousel');
+    await decorate(block);
+
+    const slides = block.querySelectorAll('.carousel-slide');
+    const firstImg = slides[0].querySelector('picture img');
+    const secondImg = slides[1].querySelector('picture img');
+
+    expect(slides[0].querySelectorAll('picture source').length).to.be.greaterThan(0);
+    expect(firstImg.getAttribute('loading')).to.equal('eager');
+    expect(secondImg.getAttribute('loading')).to.equal('lazy');
+    expect(firstImg.getAttribute('alt')).to.equal('First');
+  });
+
+  it('does not render navigation buttons when there is only one slide', async () => {
+    document.body.innerHTML = `
+      <div class="carousel">
+        <div>
+            <div><picture><img src="..." alt=""></picture></div>
+            <div>Only slide</div>
+        </div>
+      </div>
+    `;
+    const block = document.querySelector('.carousel');
+    await decorate(block);
+
+    expect(block.querySelector('.carousel-prev')).to.not.exist;
+    expect(block.querySelector('.carousel-next')).to.not.exist;
+    expect(block.querySelector('.carousel-slide').hasAttribute('hidden')).to.be.false;
+  });
 });

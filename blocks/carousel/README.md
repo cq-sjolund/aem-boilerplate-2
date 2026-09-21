@@ -6,12 +6,6 @@ was chosen. First block in this project that handles authored images
 directly (via `createOptimizedPicture`, the same helper `cards.js` already
 uses).
 
-> **Status: spec only.** This document is the agreed content contract and
-> target markup, written before `carousel.js`/`carousel.css` exist. Update the
-> before/after decoration examples once the block is built and verified
-> against real `curl`/browser output — don't leave this doc describing an
-> aspirational design once the real implementation exists.
-
 ## Content contract
 
 One row per slide. Each row has:
@@ -31,7 +25,7 @@ filtering out malformed rows.
 | (image) | Second slide caption |
 | (image) |  |
 
-## Expected markup before decoration (draft — verify once built)
+## Expected markup before decoration
 
 ```html
 <div class="carousel">
@@ -50,38 +44,55 @@ filtering out malformed rows.
 </div>
 ```
 
-## Expected markup after decoration (draft — verify once built)
+## Expected markup after decoration
 
 ```html
 <div class="carousel block" data-block-name="carousel" data-block-status="loaded">
   <div class="carousel-slides" aria-live="polite">
     <div class="carousel-slide">
-      <picture>...</picture>
+      <picture>
+        <source type="image/webp" srcset="...&width=750&format=webply&optimize=medium">
+        <img src="...&width=750&format=jpg&optimize=medium" alt="" loading="eager">
+      </picture>
       <p class="carousel-caption">First slide caption</p>
     </div>
     <div class="carousel-slide" hidden>
-      <picture>...</picture>
+      <picture>
+        <source type="image/webp" srcset="...&width=750&format=webply&optimize=medium">
+        <img src="...&width=750&format=jpg&optimize=medium" alt="" loading="lazy">
+      </picture>
       <p class="carousel-caption">Second slide caption</p>
     </div>
     <div class="carousel-slide" hidden>
-      <picture>...</picture>
+      <picture>
+        <source type="image/webp" srcset="...&width=750&format=webply&optimize=medium">
+        <img src="...&width=750&format=jpg&optimize=medium" alt="" loading="lazy">
+      </picture>
     </div>
   </div>
-  <button type="button" class="carousel-prev" aria-label="Previous slide">‹</button>
-  <button type="button" class="carousel-next" aria-label="Next slide">›</button>
+  <button type="button" class="carousel-prev" aria-label="Previous slide"></button>
+  <button type="button" class="carousel-next" aria-label="Next slide"></button>
 </div>
 ```
 
 Only one `.carousel-slide` is visible at a time (`hidden` on the rest) — same
 single-visible-item idea as `tabs`' panels, but navigated by prev/next rather
-than clicking a specific tab.
+than clicking a specific tab. The nav buttons have no visible text content —
+the `‹`/`›` arrows are drawn entirely in CSS via a `::before` pseudo-element
+(same "corner + rotate" technique as `accordion`'s chevron), so `aria-label`
+is what actually gives them an accessible name.
+
+If there's only **one** valid slide, the prev/next buttons aren't rendered
+at all — there's nothing to navigate to.
 
 ## New concepts this block introduces
 
 - **Handling authored images**: replace the raw `<img>` inside each authored
-  `<picture>` with `createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }])`
+  `<picture>` with `createOptimizedPicture(img.src, img.alt, eager, [{ width: '750' }])`
   (imported from `scripts/aem.js`), the same helper `cards.js` uses — don't
-  hand-roll responsive image markup.
+  hand-roll responsive image markup. Only the **first** slide is marked
+  `eager` (`index === 0`); the rest are `lazy`, since only the first slide is
+  visible without any interaction and is the one that can affect LCP.
 - **`aria-live="polite"` on `.carousel-slides`** announces the caption/slide
   change to assistive tech when navigating, similar in spirit to `cat-fact`'s
   live region but triggered by user action instead of a fetch.

@@ -1,17 +1,19 @@
+import { createOptimizedPicture } from '../../scripts/aem.js';
+
 function getCarouselSlides(rows) {
   const carouselSlides = document.createElement('div');
   carouselSlides.className = 'carousel-slides';
   carouselSlides.setAttribute('aria-live', 'polite');
-  rows.forEach((row) => {
+  rows.forEach((row, index) => {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
     slide.setAttribute('hidden', '');
-    row.querySelectorAll('picture').forEach((picture) => {
-      slide.append(picture);
-    });
+
+    const img = row.querySelector('picture img');
+    slide.append(createOptimizedPicture(img.src, img.alt, index === 0, [{ width: '750' }]));
 
     const body = row.children[1];
-    const { textContent } = body;
+    const textContent = body?.textContent;
     if (textContent) {
       const caption = document.createElement('p');
       caption.className = 'carousel-caption';
@@ -26,6 +28,7 @@ function getCarouselSlides(rows) {
 
 function getCarouselButton(className, label) {
   const button = document.createElement('button');
+  button.type = 'button';
   button.className = className;
   button.setAttribute('aria-label', label);
   return button;
@@ -75,16 +78,18 @@ export default function decorate(block) {
 
   const children = [];
   const slides = getCarouselSlides(rows);
-  const previousButton = getCarouselButton('carousel-prev', 'Previous');
-  const nextButton = getCarouselButton('carousel-next', 'Next');
   children.push(slides);
-  children.push(previousButton);
-  children.push(nextButton);
+
+  if (rows.length > 1) {
+    const previousButton = getCarouselButton('carousel-prev', 'Previous slide');
+    const nextButton = getCarouselButton('carousel-next', 'Next slide');
+    children.push(previousButton);
+    children.push(nextButton);
+    addEventListenersButtons(previousButton, nextButton, slides);
+  }
 
   // Unhide the first slide by removing the 'hidden' attribute
   slides.children[0].removeAttribute('hidden');
-
-  addEventListenersButtons(previousButton, nextButton, slides);
 
   block.replaceChildren(...children);
 }
