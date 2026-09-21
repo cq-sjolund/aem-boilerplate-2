@@ -103,3 +103,15 @@ at all — there's nothing to navigate to.
 
 A row with no image is skipped entirely rather than rendering a broken/empty
 slide.
+
+## Accessibility
+
+- Nav buttons get their accessible name from `aria-label` (`"Previous slide"`/
+  `"Next slide"`), since the `‹`/`›` arrows are CSS-only and have no text
+  content of their own.
+- `aria-live="polite"` on `.carousel-slides` is intended to announce the
+  slide change when navigating. **Not yet manually verified with a real
+  screen reader** (VoiceOver/NVDA) — automated tests only confirm the
+  `hidden` attribute toggles correctly, not that assistive tech actually
+  announces the change. Worth spot-checking before relying on this for a
+  production page with real content.
