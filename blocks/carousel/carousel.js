@@ -2,18 +2,17 @@ function getCarouselSlides(rows) {
   const carouselSlides = document.createElement('div');
   carouselSlides.className = 'carousel-slides';
   carouselSlides.setAttribute('aria-live', 'polite');
-  rows.forEach(row => {
+  rows.forEach((row) => {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
     slide.setAttribute('hidden', '');
-    row.querySelectorAll('picture').forEach(picture => {
+    row.querySelectorAll('picture').forEach((picture) => {
       slide.append(picture);
     });
 
-    
     const body = row.children[1];
-    const textContent = body.textContent;
-    if(textContent) {
+    const { textContent } = body;
+    if (textContent) {
       const caption = document.createElement('p');
       caption.className = 'carousel-caption';
       caption.textContent = textContent;
@@ -33,19 +32,35 @@ function getCarouselButton(className, label) {
 }
 
 function addEventListenersButtons(previousButton, nextButton, slides) {
-  // Add event listeners for carousel navigation buttons - move to new function for better modularity
   let currentIndex = 0;
 
-  previousButton.addEventListener('click', () => {
+  function showSlide(newIndex) {
     slides.children[currentIndex].setAttribute('hidden', '');
-    currentIndex = (currentIndex - 1 + slides.children.length) % slides.children.length;
+    currentIndex = newIndex;
     slides.children[currentIndex].removeAttribute('hidden');
-  });
+  }
 
-  nextButton.addEventListener('click', () => {
-    slides.children[currentIndex].setAttribute('hidden', '');
-    currentIndex = (currentIndex + 1) % slides.children.length;
-    slides.children[currentIndex].removeAttribute('hidden');
+  function showPrevious() {
+    showSlide((currentIndex - 1 + slides.children.length) % slides.children.length);
+  }
+
+  function showNext() {
+    showSlide((currentIndex + 1) % slides.children.length);
+  }
+
+  previousButton.addEventListener('click', showPrevious);
+  nextButton.addEventListener('click', showNext);
+
+  [previousButton, nextButton].forEach((button) => {
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        showPrevious();
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        showNext();
+      }
+    });
   });
 }
 
@@ -53,7 +68,7 @@ export default function decorate(block) {
   const rows = [...block.children].filter((row) => row.children[0]?.querySelector('img'));
 
   // If no configured rows, remove the block
-  if(rows.length === 0) {
+  if (rows.length === 0) {
     block.remove();
     return;
   }
@@ -69,10 +84,7 @@ export default function decorate(block) {
   // Unhide the first slide by removing the 'hidden' attribute
   slides.children[0].removeAttribute('hidden');
 
-  // Add event listeners for carousel navigation buttons - move to new function for better modularity
   addEventListenersButtons(previousButton, nextButton, slides);
-
-  // TODO: Fix styling for the Prev and Next buttons
 
   block.replaceChildren(...children);
 }
