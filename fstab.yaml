@@ -1,2 +1,5 @@
 mountpoints:
-  /: https://content.da.live/cq-sjolund/aem-boilerplate-2/
+  /:
+    url: https://author-p225311-e2307676.adobeaemcloud.com/bin/franklin.delivery/cq-sjolund/aem-boilerplate-2/main
+    type: markup
+    suffix: .html

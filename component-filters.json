@@ -1,0 +1,9 @@
+[
+  {
+    "id": "section",
+    "components": [
+      "title",
+      "hero"
+    ]
+  }
+]

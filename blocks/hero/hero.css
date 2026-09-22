@@ -1,3 +1,19 @@
+.hero-eyebrow {
+  color: #9ee6d6;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero .button {
+  background: #f4c95d;
+  color: #123047;
+  display: inline-block;
+  font-weight: 700;
+  margin-top: 1rem;
+  padding: 0.8rem 1.2rem;
+}
 /* stylelint-disable no-descending-specificity -- consolidated variant file */
 
 /* Hero block — base (full-bleed overlay) + variants (article, hero-promo) */
